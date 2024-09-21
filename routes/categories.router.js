@@ -1,38 +1,101 @@
 const express = require("express");
+const CategoriesService = require("../services/category.service");
+const service = new CategoriesService();
 
 const router = express.Router();
 
-router.get("/", (request, response) => {response.json([{ name: "electronics (fake2)" }, { name: "jewelery (fake2)" }])});
+router.get("/", async (request, response) => {
+	try {
+		response.json(await service.find());
 
-router.get("/:categoryId", (request, response) => {
-	const { categoryId } = request.params;
-
-	response.json({ categoryId, name: "electronics" })});
-
-router.post("/", (request, response) => {
-	const body = request.body;
-
-	response.json({ message: "Created", body });
+	} catch (error) {
+			response.status(500).json({
+				message: "An error occurred while fetching the categories",
+				error: error.message,
+			});
+		}
 });
 
-router.put("/:categoryId", (request, response) => {
+router.get("/:categoryId", async (request, response) => {
+	const { categoryId } = request.params;
+
+	try {
+		const category = await service.findOne(categoryId);
+
+		if (!category) {
+			response.status(404).json({
+				message: "category not found",
+			});
+		}else {
+			response.json(category);
+		}
+	} catch (error) {
+			response.status(404).json({
+				message: "An error occurred while fetching the category",
+				error: error.message,
+			})
+		}
+});
+
+router.post("/", async (request, response) => {
+	const body = request.body;
+try {
+	const newCategory = await service.create(body);
+	response.status(201).json({ message: "Created", body: newCategory });
+
+} catch (error) {
+		response.status(500).json({
+			message: "An error occurred while creating the category",
+			error: error.message,
+		});
+	}
+});
+
+router.put("/:categoryId", async (request, response) => {
 	const { categoryId } = request.params;
 	const body = request.body;
 
-	response.json({ message: "Fully updated", categoryId, body });
+	try {
+		const categoryUpdated = await service.update(categoryId, body);
+		response.json({ message: "Fully updated", body: categoryUpdated });
+
+	} catch (error) {
+			response.status(404).json({
+				message: "An error occurred while updating the category",
+				error: error.message,
+			});
+		}
 });
 
-router.patch("/:categoryId", (request, response) => {
+router.patch("/:categoryId", async (request, response) => {
 	const { categoryId } = request.params;
 	const body = request.body;
 
-	response.json({ message: "Partially updated", categoryId, body });
+	try {
+		const categoryUpdated = await service.update(categoryId, body);
+		response.json({ message: "Partially updated", body: categoryUpdated });
+
+	} catch (error) {
+			response.status(404).json({
+				message: "An error occurred while partially updating the category",
+				error: error.message,
+			});
+		}
 });
 
-router.delete("/:categoryId", (request, response) => {
+router.delete("/:categoryId", async (request, response) => {
 	const { categoryId } = request.params;
 
-	response.json({ message: "Deleted", id: categoryId });
+	try {
+		await service.delete(categoryId);
+		response.json({ message: "Deleted", id: categoryId });
+
+	} catch (error) {
+			response.status(404).json({
+				message: "An error occurred while deleting the category",
+				error: error.message,
+			});
+		}
 });
 
 module.exports = router;
