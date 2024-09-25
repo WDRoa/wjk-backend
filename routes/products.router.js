@@ -1,46 +1,34 @@
 const express = require("express");
+const boom = require("@hapi/boom");
 
 const ProductsService = require("../services/product.service");
 
 const router = express.Router();
 const service = new ProductsService();
 
-router.get("/", async (request, response) => {
-	try {
-		const products = await service.find();
-		response.json(products);
+router.get("/", async (request, response, next) => {
+  try {
+    const products = await service.find();
+    response.json(products);
 
-	} catch (error) {
-			response.status(500).json({
-				message: "An error occurred while fetching the products",
-				error: error.message
-			});
-		}
+  } catch (error) {
+    next(boom.internal('Occurred while fetching all the products', error));
+  	}
 });
 
-router.get("/:productId", async (request, response) => {
+router.get("/:productId", async (request, response, next) => {
   const { productId } = request.params;
 
   try {
     const product = await service.findOne(productId);
-
-    if (!product) {
-      return response.status(404).json({
-        message: "Product not found",
-      });
-    }
-
-    response.json(product);
+		response.json(product);
 
   } catch (error) {
-			response.status(500).json({
-				message: "An error occurred while fetching the product",
-				error: error.message,
-			});
+			next(error);
   	}
 });
 
-router.post("/", async (request, response) => {
+router.post("/", async (request, response, next) => {
   const body = request.body;
 
   try {
@@ -48,43 +36,37 @@ router.post("/", async (request, response) => {
     response.status(201).json({ message: "Created", body: newProduct });
 
   } catch (error) {
-			response.status(500).json({
-				message: "An error occurred while creating the product",
-				error: error.message,
-			});
- 	 	}
+    next(boom.internal('Occurred while creating a product', error));
+		}
 });
 
-
-router.put("/:productId", async (request, response) => {
+router.put("/:productId", async (request, response, next) => {
 	const { productId } = request.params;
 	const body = request.body;
+
 	try {
 		const productUpdated = await service.update(productId, body);
 		response.json({ message: "Fully updated", body: productUpdated });
 
 	} catch (error) {
-			response.status(404).json({
-				message: error.message,
-			})
+			next(error);
 		}
 });
 
-router.patch("/:productId", async (request, response) => {
+router.patch("/:productId", async (request, response, next) => {
 	const { productId } = request.params;
 	const body = request.body;
+
 	try {
 		const productUpdated = await service.update(productId, body);
 		response.json({ message: "Partially updated", body: productUpdated });
 
 	} catch (error) {
-			response.status(404).json({
-				message: error.message,
-			})
+			next(error);
 		}
 });
 
-router.delete("/:productId", async (request, response) => {
+router.delete("/:productId", async (request, response, next) => {
 	const { productId } = request.params;
 
 	try {
@@ -92,10 +74,7 @@ router.delete("/:productId", async (request, response) => {
 		response.json({ message: "Deleted", id: productId });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while deleting the product",
-				error: error.message,
-			})
+			next(error);
 		}
 });
 

@@ -1,4 +1,5 @@
 const { faker } = require("@faker-js/faker");
+const boom = require("@hapi/boom");
 
 class CategoriesService {
 
@@ -10,7 +11,9 @@ class CategoriesService {
 	generate() {
 		const limit = 4;
 		for (let index = 1; index < limit; index++) {
-			this.categories.push({	id: faker.string.uuid(), name: `Category number ${index}`,	});
+			this.categories.push({
+				id: faker.string.uuid(),
+				name: `Category number ${index}`	});
 		}
 	}
 
@@ -33,15 +36,22 @@ class CategoriesService {
   }
 
   async findOne(id) {
-    return this.categories.find(item => item.id === id);
+    const category = this.categories.find(item => item.id === id);
+
+		if (!category) {
+			throw boom.notFound('Occurred while finding a category');
+		}
+
+		return category;
   }
 
   async update(id, changes) {
-
 		const index = this.categories.findIndex(item => item.id === id);
+
 		if(index === -1){
-			throw new Error('category not found');
+			throw boom.notFound('Occurred while updating a category');
 		}
+
 		const categoryToUpdate = this.categories[index];
 		this.categories[index] = {...categoryToUpdate, ...changes};
 		return this.categories[index];
@@ -49,8 +59,9 @@ class CategoriesService {
 
   async delete(id) {
 		const index = this.categories.findIndex(item => item.id === id);
+
 		if(index === -1){
-			throw new Error('category not found');
+			throw boom.notFound('Occurred while deleting a category');
 		}
 		this.categories.splice(index, 1);
 		return id;

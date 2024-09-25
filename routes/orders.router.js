@@ -1,45 +1,34 @@
 const express = require("express");
+const boom = require("@hapi/boom");
+
 const OrdersService = require("../services/order.service");
-const service = new OrdersService();
 
 const router = express.Router();
+const service = new OrdersService();
 
-router.get("/", async (request, response) => {
+router.get("/", async (request, response, next) => {
 	try {
 		const orders = await service.find();
 		response.json(orders);
 
 	} catch (error) {
-			response.status(500).json({
-				message: "An error occurred while fetching the orders",
-				error: error.message
-			});
+			next(boom.internal('Occurred while fetching all the orders', error));
 		}
 });
 
-router.get("/:orderId", async (request, response) => {
+router.get("/:orderId", async (request, response, next) => {
 	const { orderId } = request.params;
 
 	try {
 		const order = await service.findOne(orderId);
-
-		if (!order) {
-			response.status(404).json({
-				message: "order not found",
-			});
-		}else {
-			response.json(order);
-		}
+		response.json(order);
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while fetching the category",
-				error: error.message,
-			})
+			next(error);
 		}
 });
 
-router.post("/", async (request, response) => {
+router.post("/", async (request, response, next) => {
 	const body = request.body;
 
 	try {
@@ -47,14 +36,11 @@ router.post("/", async (request, response) => {
 		response.status(201).json({ message: "Created", body: newOrder });
 
 	} catch (error) {
-			response.status(500).json({
-				message: "An error occurred while creating the order",
-				error: error.message,
-			});
+			next(boom.internal('Occurred while creating an order', error));
 		}
 });
 
-router.put("/:orderId", async (request, response) => {
+router.put("/:orderId", async (request, response, next) => {
 	const { orderId } = request.params;
 	const body = request.body;
 
@@ -63,14 +49,11 @@ router.put("/:orderId", async (request, response) => {
 		response.json({ message: "Fully updated", body: orderUpdated });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while updating the order",
-				error: error.message,
-			});
+			next(error);
 		}
 });
 
-router.patch("/:orderId", async (request, response) => {
+router.patch("/:orderId", async (request, response, next) => {
 	const { orderId } = request.params;
 	const body = request.body;
 
@@ -79,14 +62,11 @@ router.patch("/:orderId", async (request, response) => {
 		response.json({ message: "Partially updated", body: orderUpdated });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while partially updating the order",
-				error: error.message,
-			})
+			next(error);
 		}
 });
 
-router.delete("/:orderId", async (request, response) => {
+router.delete("/:orderId", async (request, response, next) => {
 	const { orderId } = request.params;
 
 	try {
@@ -94,10 +74,7 @@ router.delete("/:orderId", async (request, response) => {
 		response.json({ message: "Deleted", id: orderId });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while deleting the order",
-				error: error.message,
-			})
+			next(error);
 		}
 });
 

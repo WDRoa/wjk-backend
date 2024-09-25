@@ -1,57 +1,46 @@
 const express = require("express");
+const boom = require("@hapi/boom");
+
 const CategoriesService = require("../services/category.service");
-const service = new CategoriesService();
 
 const router = express.Router();
+const service = new CategoriesService();
 
-router.get("/", async (request, response) => {
+router.get("/", async (request, response, next) => {
 	try {
-		response.json(await service.find());
+		const categories = await service.find();
+		response.json(categories);
 
 	} catch (error) {
-			response.status(500).json({
-				message: "An error occurred while fetching the categories",
-				error: error.message,
-			});
+			next(boom.internal('Occurred while fetching all the categories', error));
 		}
 });
 
-router.get("/:categoryId", async (request, response) => {
+router.get("/:categoryId", async (request, response, next) => {
 	const { categoryId } = request.params;
 
 	try {
 		const category = await service.findOne(categoryId);
+		response.json(category);
 
-		if (!category) {
-			response.status(404).json({
-				message: "category not found",
-			});
-		}else {
-			response.json(category);
-		}
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while fetching the category",
-				error: error.message,
-			})
+			next(error);
 		}
 });
 
-router.post("/", async (request, response) => {
+router.post("/", async (request, response, next) => {
 	const body = request.body;
-try {
-	const newCategory = await service.create(body);
-	response.status(201).json({ message: "Created", body: newCategory });
 
-} catch (error) {
-		response.status(500).json({
-			message: "An error occurred while creating the category",
-			error: error.message,
-		});
-	}
+	try {
+		const newCategory = await service.create(body);
+		response.status(201).json({ message: "Created", body: newCategory });
+
+	} catch (error) {
+			next(boom.internal('Occurred while creating a category', error));
+		}
 });
 
-router.put("/:categoryId", async (request, response) => {
+router.put("/:categoryId", async (request, response, next) => {
 	const { categoryId } = request.params;
 	const body = request.body;
 
@@ -60,14 +49,11 @@ router.put("/:categoryId", async (request, response) => {
 		response.json({ message: "Fully updated", body: categoryUpdated });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while updating the category",
-				error: error.message,
-			});
+			next(error);
 		}
 });
 
-router.patch("/:categoryId", async (request, response) => {
+router.patch("/:categoryId", async (request, response, next) => {
 	const { categoryId } = request.params;
 	const body = request.body;
 
@@ -76,14 +62,11 @@ router.patch("/:categoryId", async (request, response) => {
 		response.json({ message: "Partially updated", body: categoryUpdated });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while partially updating the category",
-				error: error.message,
-			});
+			next(error);
 		}
 });
 
-router.delete("/:categoryId", async (request, response) => {
+router.delete("/:categoryId", async (request, response, next) => {
 	const { categoryId } = request.params;
 
 	try {
@@ -91,10 +74,7 @@ router.delete("/:categoryId", async (request, response) => {
 		response.json({ message: "Deleted", id: categoryId });
 
 	} catch (error) {
-			response.status(404).json({
-				message: "An error occurred while deleting the category",
-				error: error.message,
-			});
+			next(error);
 		}
 });
 
