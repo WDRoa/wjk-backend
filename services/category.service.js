@@ -13,12 +13,12 @@ class CategoriesService {
 		for (let index = 1; index < limit; index++) {
 			this.categories.push({
 				id: faker.string.uuid(),
-				name: `Category number ${index}`	});
+				name: `Category number ${index}`,
+				image: `https://imageOfCategory${index}.jpg`,});
 		}
 	}
 
   async create(data) {
-
 		const newCategory = {
 			id: faker.string.uuid(),
 			...data
@@ -39,7 +39,7 @@ class CategoriesService {
     const category = this.categories.find(item => item.id === id);
 
 		if (!category) {
-			throw boom.notFound('Occurred while finding a category');
+			throw boom.notFound("Occurred while finding a category");
 		}
 
 		return category;
@@ -49,7 +49,7 @@ class CategoriesService {
 		const index = this.categories.findIndex(item => item.id === id);
 
 		if(index === -1){
-			throw boom.notFound('Occurred while updating a category');
+			throw boom.notFound("Occurred while updating a category");
 		}
 
 		const categoryToUpdate = this.categories[index];
@@ -61,7 +61,7 @@ class CategoriesService {
 		const index = this.categories.findIndex(item => item.id === id);
 
 		if(index === -1){
-			throw boom.notFound('Occurred while deleting a category');
+			throw boom.notFound("Occurred while deleting a category");
 		}
 		this.categories.splice(index, 1);
 		return id;

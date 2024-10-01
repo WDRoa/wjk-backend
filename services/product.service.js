@@ -42,11 +42,11 @@ class ProductsService {
 		const product = this.products.find(item => item.id === id);
 
 		if (!product) {
-			throw boom.notFound('Occurred while finding a product');
+			throw boom.notFound("Occurred while finding a product");
 		}
 
 		if (product.isBlock) {
-			throw boom.conflict('Product is blocked');
+			throw boom.conflict("Product is blocked");
 		}
 
 		return product;

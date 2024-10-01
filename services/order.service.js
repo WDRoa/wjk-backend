@@ -13,8 +13,9 @@ class OrdersService {
 		for (let index = 1; index < limit; index++) {
 			this.orders.push({
 				id: faker.string.uuid(),
-				name: `Order number ${index}`,
-				products: `${index} products`
+				date: `2024/11/${index}`,
+				quantityOfProducts: index,
+				total: index * 5,
 			}
 			);
 		}
@@ -41,7 +42,7 @@ class OrdersService {
     const order = this.orders.find(item => item.id === id);
 
 		if (!order) {
-			throw boom.notFound('Occurred while finding an order');
+			throw boom.notFound("Occurred while finding an order");
 		}
 
 		return order;

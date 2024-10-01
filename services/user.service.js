@@ -13,9 +13,10 @@ class UsersService {
 		for (let index = 1; index < limit; index++) {
 			this.users.push({
 				id: faker.string.uuid(),
-				name: `User number ${index}`,
-				email: `Email ${index}`,
-				password: `*****`,
+				names: `User number ${index}`,
+				lastNames: `Last names of user number ${index}`,
+				email: `email${index}@email.com`,
+				password: `********`,
 				address: `Address number ${index}`
 			}
 			);
@@ -43,7 +44,7 @@ class UsersService {
     const user = this.users.find(item => item.id === id);
 
 		if (!user) {
-			throw boom.notFound('Occurred while finding an user');
+			throw boom.notFound("Occurred while finding an user");
 		}
 
 		return user;

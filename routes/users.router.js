@@ -2,6 +2,9 @@ const express = require("express");
 const boom = require("@hapi/boom");
 
 const UsersService = require("../services/user.service");
+const validatorHandler = require("../middlewares/validator.handler");
+const { createUserSchema, updateUserSchema, getUserSchema } = require("../schemas/user.schema");
+
 
 const router = express.Router();
 const service = new UsersService();
@@ -12,70 +15,82 @@ router.get("/", async (request, response, next) => {
 		response.json(users);
 
 	} catch (error) {
-			next(boom.internal('Occurred while fetching all the users', error));
+			next(boom.internal("Occurred while fetching all the users", error));
 		}
 });
 
-router.get("/:userId", async (request, response, next) => {
-	const { userId } = request.params;
+router.get("/:userId",
+	validatorHandler(getUserSchema, "params"),
+	async (request, response, next) => {
+		const { userId } = request.params;
 
-	try {
-		const user = await service.findOne(userId);
-		response.json(user);
+		try {
+			const user = await service.findOne(userId);
+			response.json(user);
 
-	} catch (error) {
-			next(error);
-		}
+		} catch (error) {
+				next(error);
+			}
 });
 
-router.post("/", async (request, response, next) => {
-	const body = request.body;
+router.post("/",
+	validatorHandler(createUserSchema, "body"),
+	async (request, response, next) => {
+		const body = request.body;
 
-	try {
-		const newUser = await service.create(body);
-		response.status(201).json({ message: "Created", body: newUser });
+		try {
+			const newUser = await service.create(body);
+			response.status(201).json({ message: "Created", body: newUser });
 
-	} catch (error) {
-			next(boom.internal('Occurred while creating an user', error));
-		}
+		} catch (error) {
+				next(boom.internal("Occurred while creating an user", error));
+			}
 });
 
-router.put("/:userId", async (request, response, next) => {
-	const { userId } = request.params;
-	const body = request.body;
+router.put("/:userId",
+	validatorHandler(getUserSchema, "params"),
+	validatorHandler(updateUserSchema, "body"),
+	async (request, response, next) => {
+		const { userId } = request.params;
+		const body = request.body;
 
-	try {
-		const userUpdated = await service.update(userId, body);
-		response.json({ message: "Fully updated", body: userUpdated });
+		try {
+			const userUpdated = await service.update(userId, body);
+			response.json({ message: "Fully updated", body: userUpdated });
 
-	} catch (error) {
-			next(error);
-		}
+		} catch (error) {
+				next(error);
+			}
 });
 
-router.patch("/:userId", async (request, response, next) => {
-	const { userId } = request.params;
-	const body = request.body;
+router.patch("/:userId",
+	validatorHandler(getUserSchema, "params"),
+	validatorHandler(updateUserSchema, "body"),
+	async (request, response, next) => {
+		const { userId } = request.params;
+		const body = request.body;
 
-	try {
-		const userUpdated = await service.update(userId, body);
-		response.json({ message: "Partially updated", body: userUpdated });
+		try {
+			const userUpdated = await service.update(userId, body);
+			response.json({ message: "Partially updated", body: userUpdated });
 
-	} catch (error) {
-			next(error);
-		}
+		} catch (error) {
+				next(error);
+			}
 });
 
-router.delete("/:userId", async (request, response, next) => {
-	const { userId } = request.params;
+router.delete("/:userId",
+	validatorHandler(getUserSchema, "params"),
+	async (request, response, next) => {
+		const { userId } = request.params;
 
-	try {
-		await service.delete(userId);
-		response.json({ message: "Deleted", id: userId });
+		try {
+			await service.delete(userId);
+			response.json({ message: "Deleted", id: userId });
 
-	} catch (error) {
-			next(error);
-		}
+		} catch (error) {
+				next(error);
+			}
 });
 
 module.exports = router;
