@@ -25,10 +25,15 @@ router.get("/:productId",
 
 		try {
 			const product = await service.findOne(productId);
-			response.json(product);
+
+			if (product.isBlock) {
+					throw boom.conflict("Product is blocked");
+			}	else {
+					response.json(product);
+				}
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while fetching an product", error));
 			}
 });
 
@@ -58,7 +63,7 @@ router.put("/:productId",
 			response.json({ message: "Fully updated", body: productUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating an product completely", error));
 			}
 });
 
@@ -74,7 +79,7 @@ router.patch("/:productId",
 			response.json({ message: "Partially updated", body: productUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating an product partially", error));
 			}
 });
 
@@ -88,7 +93,7 @@ router.delete("/:productId",
 		response.json({ message: "Deleted", id: productId });
 
 	} catch (error) {
-			next(error);
+			next(boom.notFound("Occurred while deleting an product", error));
 		}
 });
 

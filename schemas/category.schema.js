@@ -6,8 +6,10 @@ const image = Joi.string().uri();
 const isBlock = Joi.boolean();
 
 const createCategorySchema = Joi.object({
+	categoryId: categoryId.required(),
   name: name.required(),
-	image: image.required()
+	image: image.required(),
+	isBlock: isBlock.required()
 });
 
 const updateCategorySchema = Joi.object({

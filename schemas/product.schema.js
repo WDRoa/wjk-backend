@@ -7,9 +7,11 @@ const image = Joi.string().uri();
 const isBlock = Joi.boolean();
 
 const createProductSchema = Joi.object({
+	productId: productId.required(),
   name: name.required(),
   price: price.required(),
-	image: image.required()
+	image: image.required(),
+	isBlock: isBlock.required()
 });
 
 const updateProductSchema = Joi.object({

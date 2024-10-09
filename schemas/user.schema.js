@@ -9,11 +9,13 @@ const address = Joi.string().min(3).max(50);
 const isBlock = Joi.boolean();
 
 const createUserSchema = Joi.object({
+	userId: userId.required(),
   names: names.required(),
 	lastNames: lastNames.required(),
 	email: email.required(),
 	password: password.required(),
-	address: address.required()
+	address: address.required(),
+	isBlock: isBlock.required()
 });
 
 const updateUserSchema = Joi.object({

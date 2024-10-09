@@ -25,10 +25,15 @@ router.get("/:categoryId",
 
 		try {
 			const category = await service.findOne(categoryId);
-			response.json(category);
+
+			if (category.isBlock) {
+					throw boom.conflict("Category is blocked");
+			} else {
+					response.json(category);
+				}
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while fetching a category", error));
 			}
 });
 
@@ -58,7 +63,7 @@ router.put("/:categoryId",
 			response.json({ message: "Fully updated", body: categoryUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating a category completely", error));
 			}
 });
 
@@ -74,7 +79,7 @@ router.patch("/:categoryId",
 			response.json({ message: "Partially updated", body: categoryUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating a category partially", error));
 			}
 });
 
@@ -88,7 +93,7 @@ router.delete("/:categoryId",
 		response.json({ message: "Deleted", id: categoryId });
 
 	} catch (error) {
-			next(error);
+			next(boom.notFound("Occurred while deleting a category", error));
 		}
 });
 

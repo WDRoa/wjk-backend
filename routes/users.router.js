@@ -26,10 +26,15 @@ router.get("/:userId",
 
 		try {
 			const user = await service.findOne(userId);
-			response.json(user);
+
+			if (user.isBlock) {
+					throw boom.conflict("User is blocked");
+			} else {
+					response.json(user);
+				}
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Ocurred while fetching an user", error));
 			}
 });
 
@@ -59,7 +64,7 @@ router.put("/:userId",
 			response.json({ message: "Fully updated", body: userUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating an user completely", error));
 			}
 });
 
@@ -75,7 +80,7 @@ router.patch("/:userId",
 			response.json({ message: "Partially updated", body: userUpdated });
 
 		} catch (error) {
-				next(error);
+			next(boom.notFound("Occurred while updating an user partially", error));
 			}
 });
 
@@ -89,7 +94,7 @@ router.delete("/:userId",
 			response.json({ message: "Deleted", id: userId });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while deleting an user", error));
 			}
 });
 

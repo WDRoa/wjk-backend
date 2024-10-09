@@ -25,10 +25,15 @@ router.get("/:orderId",
 
 		try {
 			const order = await service.findOne(orderId);
-			response.json(order);
+
+			if (order.isBlock) {
+					throw boom.conflict("Order is blocked");
+			} else {
+					response.json(order);
+				}
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while fetching an order", error));
 			}
 });
 
@@ -58,7 +63,7 @@ router.put("/:orderId",
 			response.json({ message: "Fully updated", body: orderUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating an order completely", error));
 			}
 });
 
@@ -74,7 +79,7 @@ router.patch("/:orderId",
 			response.json({ message: "Partially updated", body: orderUpdated });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while updating an order partially", error));
 			}
 });
 
@@ -88,7 +93,7 @@ router.delete("/:orderId",
 			response.json({ message: "Deleted", id: orderId });
 
 		} catch (error) {
-				next(error);
+				next(boom.notFound("Occurred while deleting an order", error));
 			}
 });
 
