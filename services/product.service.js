@@ -1,28 +1,33 @@
-// const { faker } = require("@faker-js/faker");
-
-const { models } = require("../libs/sequelize");
+const { Op } = require("sequelize");
+const { models } = require("./../libs/sequelize");
 
 class ProductsService {
 
-  constructor(){
-    // this.products = [];
-    // this.generate();
-  }
+	async find(query) {
+		const options = {
+			include: ["category"],
+			where: {}
+		}
+		const { limit, offset } = query;
+		if (limit && offset) {
+			options.limit = limit;
+			options.offset = offset;
+		}
 
-  generate() {
-    // const limit = 5;
-    // for (let index = 1; index < limit; index++) {
-    //   this.products.push({
-    //     id: faker.string.uuid(),
-    //     name: faker.commerce.productName(),
-    //     price: parseInt(faker.commerce.price(), 10),
-		// 		image: "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-		// 		isBlock: faker.datatype.boolean(),
-    //   });
-    // }
-  }
-	async find() {
-		const products = await models.Product.findAll();
+		const { price } = query;
+		if (price) {
+			options.where.price = price;
+		}
+
+		const { price_min, price_max } = query;
+		if (price_min && price_max) {
+			options.where.price = {
+				[Op.gte]: price_min,
+				[Op.lte]: price_max
+			}
+		}
+
+		const products = await models.Product.findAll(options);
 		return products;
 	}
 

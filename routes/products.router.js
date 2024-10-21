@@ -1,21 +1,23 @@
 const express = require("express");
 const boom = require("@hapi/boom");
 
-const ProductsService = require("../services/product.service");
-const validatorHandler = require("../middlewares/validator.handler");
-const { createProductSchema, updateProductSchema, getProductSchema } = require("../schemas/product.schema");
+const ProductsService = require("./../services/product.service");
+const validatorHandler = require("./../middlewares/validator.handler");
+const { createProductSchema, updateProductSchema, getProductSchema, queryProductSchema } = require("./../schemas/product.schema");
 
 const router = express.Router();
 const service = new ProductsService();
 
-router.get("/", async (request, response, next) => {
-  try {
-    const products = await service.find();
-    response.json(products);
+router.get("/",
+	validatorHandler(queryProductSchema, "query"),
+	async (request, response, next) => {
+		try {
+			const products = await service.find(request.query);
+			response.json(products);
 
-  } catch (error) {
-    next(boom.internal("Occurred while fetching all the products", error));
-  	}
+		} catch (error) {
+				next(boom.internal("Occurred while fetching all the products", error));
+			}
 });
 
 router.get("/:productId",

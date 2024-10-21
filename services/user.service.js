@@ -1,27 +1,6 @@
-// const { faker } = require("@faker-js/faker");
-
-const { models } = require("../libs/sequelize");
+const { models } = require("./../libs/sequelize");
 
 class UsersService {
-  constructor(){
-    // this.users = [];
-		// this.generate();
-  }
-
-	// generate() {
-	// 	// const limit = 4;
-	// 	// for (let index = 1; index < limit; index++) {
-	// 	// 	this.users.push({
-	// 	// 		id: faker.string.uuid(),
-	// 	// 		names: `User number ${index}`,
-	// 	// 		lastNames: `Last names of user number ${index}`,
-	// 	// 		email: `email${index}@email.com`,
-	// 	// 		password: `********`,
-	// 	// 		address: `Address number ${index}`
-	// 	// 	}
-	// 	// 	);
-	// 	// }
-	// }
 
 	async find() {
 		const users = await models.User.findAll();

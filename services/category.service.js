@@ -1,31 +1,13 @@
-// const { faker } = require("@faker-js/faker");
-
-const { models } = require("../libs/sequelize");
+const { models } = require("./../libs/sequelize");
 
 class CategoriesService {
-
-  constructor(){
-    // this.categories = [];
-		// this.generate();
-  }
-
-	generate() {
-		// const limit = 4;
-		// for (let index = 1; index < limit; index++) {
-		// 	this.categories.push({
-		// 		id: faker.string.uuid(),
-		// 		name: `Category number ${index}`,
-		// 		image: `https://imageOfCategory${index}.jpg`,});
-		// }
-	}
-
   async find() {
 		const categories = await models.Category.findAll();
 		return categories;
   }
 
   async findOne(id) {
-		const category = await models.Category.findByPk(id);
+		const category = await models.Category.findByPk(id, { include: ["products"] });
 		return category;
 	}
 

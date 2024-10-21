@@ -1,9 +1,9 @@
 const express = require("express");
 const boom = require("@hapi/boom");
 
-const OrdersService = require("../services/order.service");
-const validatorHandler = require("../middlewares/validator.handler");
-const { createOrderSchema, updateOrderSchema, getOrderSchema } = require("../schemas/order.schema");
+const OrdersService = require("./../services/order.service");
+const validatorHandler = require("./../middlewares/validator.handler");
+const { createOrderSchema, updateOrderSchema, getOrderSchema, addItemSchema } = require("./../schemas/order.schema");
 
 const router = express.Router();
 const service = new OrdersService();
@@ -48,6 +48,20 @@ router.post("/",
 
 		} catch (error) {
 				next(boom.internal("Occurred while creating an order", error));
+			}
+});
+
+router.post("/add-item",
+	validatorHandler(addItemSchema, "body"),
+	async (request, response, next) => {
+		const body = request.body;
+
+		try {
+			const newItem = await service.addItem(body);
+			response.status(201).json({ message: "Added", body: newItem });
+
+		} catch (error) {
+				next(boom.internal("Occurred while adding an item", error));
 			}
 });
 

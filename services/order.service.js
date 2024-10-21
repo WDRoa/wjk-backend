@@ -1,40 +1,25 @@
-// const { faker } = require("@faker-js/faker");
-
-const { models } = require("../libs/sequelize");
+const { models } = require("./../libs/sequelize");
 
 class OrdersService {
 
-  constructor(){
-    // this.orders = [];
-		// this.generate();
-  }
-
-	generate() {
-		// const limit = 4;
-		// for (let index = 1; index < limit; index++) {
-		// 	this.orders.push({
-		// 		id: faker.string.uuid(),
-		// 		date: `2024/11/${index}`,
-		// 		quantityOfProducts: index,
-		// 		total: index * 5,
-		// 	}
-		// 	);
-		// }
-	}
-
   async find() {
-		const orders = await models.Order.findAll();
+		const orders = await models.Order.findAll({include: ["user"]});
 		return orders;
   }
 
   async findOne(id) {
-		const order = await models.Order.findByPk(id);
+		const order = await models.Order.findByPk(id, { include: ["user", "items"] });
 		return order;
   }
 
 	async create(data) {
 		const newOrder = await models.Order.create(data);
 		return newOrder;
+	}
+
+	async addItem(data) {
+		const newItem = await models.OrderProduct.create(data);
+		return newItem;
 	}
 
   async update(id, changes) {

@@ -1,5 +1,7 @@
 const { Model, DataTypes, Sequelize } = require("sequelize");
 
+const { USER_TABLE } = require("./user.model");
+
 const ORDER_TABLE = "orders";
 
 const OrderSchema = {
@@ -9,20 +11,27 @@ const OrderSchema = {
 		field: "order_id",
     type: DataTypes.STRING,
   },
+	userId: {
+		allowNull: true,
+		field: "user_id",
+		type: DataTypes.STRING,
+		unique: false,
+		references: {
+			model: USER_TABLE,
+			key: "user_id",
+		},
+		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+	},
   number: {
     allowNull: false,
     autoIncrement: true,
     type: DataTypes.INTEGER,
     unique: true,
   },
-	quantityOfProducts: {
+	date: {
 		allowNull: false,
-		field: "quantity_of_products",
-		type: DataTypes.INTEGER,
-	},
-	total: {
-		allowNull: false,
-		type: DataTypes.INTEGER,
+		type: DataTypes.DATE,
 	},
 	isBlock: {
 		allowNull: false,
@@ -38,7 +47,18 @@ const OrderSchema = {
 };
 
 class Order extends Model {
-  static associate() {}
+  static associate(models) {
+		this.belongsTo(models.User, {
+			as: "user",
+			foreignKey: "userId",
+		})
+		this.belongsToMany(models.Product, {
+			as: "items",
+			through: models.OrderProduct,
+			foreignKey: "orderId",
+			otherKey: "productId",
+		})
+	}
 
   static config(sequelize) {
     return {

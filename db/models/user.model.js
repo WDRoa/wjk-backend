@@ -9,6 +9,11 @@ const UserSchema = {
 		field: "user_id",
     type: DataTypes.STRING,
   },
+	role: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    defaultValue: "customer"
+  },
 	names: {
 		allowNull: false,
 		type: DataTypes.STRING,
@@ -27,6 +32,20 @@ const UserSchema = {
     allowNull: false,
     type: DataTypes.STRING,
   },
+	phone: {
+		allowNull: false,
+		type: DataTypes.STRING,
+		unique: true,
+	},
+	address: {
+		allowNull: false,
+		type: DataTypes.STRING,
+	},
+	isBlock: {
+		allowNull: false,
+		field: "is_block",
+		type: DataTypes.BOOLEAN,
+	},
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
@@ -36,7 +55,12 @@ const UserSchema = {
 };
 
 class User extends Model {
-  static associate() {}
+  static associate(models) {
+		this.hasMany(models.Order, {
+			as: "orders",
+			foreignKey: "userId",
+		});
+	}
 
   static config(sequelize) {
     return {

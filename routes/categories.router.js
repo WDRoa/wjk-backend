@@ -1,9 +1,9 @@
 const express = require("express");
 const boom = require("@hapi/boom");
 
-const CategoriesService = require("../services/category.service");
-const validatorHandler = require("../middlewares/validator.handler");
-const { createCategorySchema, updateCategorySchema, getCategorySchema } = require("../schemas/category.schema");
+const CategoriesService = require("./../services/category.service");
+const validatorHandler = require("./../middlewares/validator.handler");
+const { createCategorySchema, updateCategorySchema, getCategorySchema } = require("./../schemas/category.schema");
 
 const router = express.Router();
 const service = new CategoriesService();

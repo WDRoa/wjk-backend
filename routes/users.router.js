@@ -1,9 +1,9 @@
 const express = require("express");
 const boom = require("@hapi/boom");
 
-const UsersService = require("../services/user.service");
-const validatorHandler = require("../middlewares/validator.handler");
-const { createUserSchema, updateUserSchema, getUserSchema } = require("../schemas/user.schema");
+const UsersService = require("./../services/user.service");
+const validatorHandler = require("./../middlewares/validator.handler");
+const { createUserSchema, updateUserSchema, getUserSchema } = require("./../schemas/user.schema");
 
 
 const router = express.Router();

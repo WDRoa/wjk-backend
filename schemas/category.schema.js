@@ -5,6 +5,10 @@ const name = Joi.string().min(3).max(20);
 const image = Joi.string().uri();
 const isBlock = Joi.boolean();
 
+const getCategorySchema = Joi.object({
+	categoryId: categoryId.required()
+});
+
 const createCategorySchema = Joi.object({
 	categoryId: categoryId.required(),
   name: name.required(),
@@ -18,8 +22,4 @@ const updateCategorySchema = Joi.object({
 	isBlock
 });
 
-const getCategorySchema = Joi.object({
-  categoryId: categoryId.required()
-});
-
-module.exports = { createCategorySchema, updateCategorySchema, getCategorySchema }
+module.exports = { getCategorySchema, createCategorySchema, updateCategorySchema }
