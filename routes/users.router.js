@@ -1,15 +1,20 @@
 const express = require("express");
 const boom = require("@hapi/boom");
+const passport = require("passport");
 
 const UsersService = require("./../services/user.service");
 const validatorHandler = require("./../middlewares/validator.handler");
+const { checkRoles } = require("./../middlewares/auth.handler");
 const { createUserSchema, updateUserSchema, getUserSchema } = require("./../schemas/user.schema");
 
 
 const router = express.Router();
 const service = new UsersService();
 
-router.get("/", async (request, response, next) => {
+router.get("/",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
+	async (request, response, next) => {
 	try {
 		const users = await service.find();
 		response.json(users);
@@ -20,6 +25,8 @@ router.get("/", async (request, response, next) => {
 });
 
 router.get("/:userId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	async (request, response, next) => {
 		const { userId } = request.params;
@@ -39,6 +46,8 @@ router.get("/:userId",
 });
 
 router.post("/",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(createUserSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
@@ -53,6 +62,8 @@ router.post("/",
 });
 
 router.put("/:userId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	validatorHandler(updateUserSchema, "body"),
 	async (request, response, next) => {
@@ -69,6 +80,8 @@ router.put("/:userId",
 });
 
 router.patch("/:userId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	validatorHandler(updateUserSchema, "body"),
 	async (request, response, next) => {
@@ -85,6 +98,8 @@ router.patch("/:userId",
 });
 
 router.delete("/:userId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	async (request, response, next) => {
 		const { userId } = request.params;

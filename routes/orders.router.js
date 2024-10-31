@@ -1,14 +1,19 @@
 const express = require("express");
 const boom = require("@hapi/boom");
+const passport = require("passport");
 
 const OrdersService = require("./../services/order.service");
 const validatorHandler = require("./../middlewares/validator.handler");
+const { checkRoles } = require("./../middlewares/auth.handler");
 const { createOrderSchema, updateOrderSchema, getOrderSchema, addItemSchema } = require("./../schemas/order.schema");
 
 const router = express.Router();
 const service = new OrdersService();
 
-router.get("/", async (request, response, next) => {
+router.get("/",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
+	async (request, response, next) => {
 	try {
 		const orders = await service.find();
 		response.json(orders);
@@ -19,6 +24,8 @@ router.get("/", async (request, response, next) => {
 });
 
 router.get("/:orderId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	async (request, response, next) => {
 		const { orderId } = request.params;
@@ -38,6 +45,7 @@ router.get("/:orderId",
 });
 
 router.post("/",
+	passport.authenticate("jwt", { session: false }),
 	validatorHandler(createOrderSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
@@ -52,6 +60,7 @@ router.post("/",
 });
 
 router.post("/add-item",
+	passport.authenticate("jwt", { session: false }),
 	validatorHandler(addItemSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
@@ -66,6 +75,8 @@ router.post("/add-item",
 });
 
 router.put("/:orderId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	validatorHandler(updateOrderSchema, "body"),
 	async (request, response, next) => {
@@ -82,6 +93,8 @@ router.put("/:orderId",
 });
 
 router.patch("/:orderId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	validatorHandler(updateOrderSchema, "body"),
 	async (request, response, next) => {
@@ -98,6 +111,8 @@ router.patch("/:orderId",
 });
 
 router.delete("/:orderId",
+	passport.authenticate("jwt", { session: false }),
+	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	async (request, response, next) => {
 		const { orderId } = request.params;
