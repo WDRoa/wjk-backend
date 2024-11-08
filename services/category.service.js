@@ -1,3 +1,4 @@
+const { faker } = require("@faker-js/faker");
 const { models } = require("./../libs/sequelize");
 
 class CategoriesService {
@@ -12,7 +13,7 @@ class CategoriesService {
 	}
 
 	async create(data) {
-		const newCategory = await models.Category.create(data);
+		const newCategory = await models.Category.create({ categoryId: faker.string.uuid(), ...data });
 		return newCategory;
 	}
 

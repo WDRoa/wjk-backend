@@ -1,3 +1,4 @@
+const { faker } = require("@faker-js/faker");
 const { Op } = require("sequelize");
 const { models } = require("./../libs/sequelize");
 
@@ -37,7 +38,7 @@ class ProductsService {
 	}
 
   async create(data) {
-		const newProduct = await models.Product.create(data);
+		const newProduct = await models.Product.create({ productId: faker.string.uuid(), ...data });
 		return newProduct;
   }
 

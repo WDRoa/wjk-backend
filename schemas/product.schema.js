@@ -19,7 +19,6 @@ const getProductSchema = Joi.object({
 });
 
 const createProductSchema = Joi.object({
-	productId: productId.required(),
 	categoryId: categoryId.required(),
   name: name.required(),
   price: price.required(),
@@ -48,4 +47,4 @@ const queryProductSchema = Joi.object({
 	}),
 });
 
-module.exports = { getProductSchema, createProductSchema, updateProductSchema, queryProductSchema }
+module.exports = { getProductSchema, createProductSchema, updateProductSchema, queryProductSchema };

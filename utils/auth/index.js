@@ -5,3 +5,5 @@ const JwtStrategy = require("./strategies/jwt.strategy");
 
 passport.use(LocalStrategy);
 passport.use(JwtStrategy);
+
+module.exports = passport;

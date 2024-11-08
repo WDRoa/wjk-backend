@@ -32,6 +32,7 @@ const OrderSchema = {
 	date: {
 		allowNull: false,
 		type: DataTypes.DATE,
+		defaultValue: Sequelize.NOW
 	},
 	isBlock: {
 		allowNull: false,

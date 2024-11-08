@@ -1,6 +1,7 @@
 const express = require("express");
 const boom = require("@hapi/boom");
 const passport = require("passport");
+const { faker } = require("@faker-js/faker");
 
 const OrdersService = require("./../services/order.service");
 const validatorHandler = require("./../middlewares/validator.handler");
@@ -49,9 +50,10 @@ router.post("/",
 	validatorHandler(createOrderSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
+		const bodyWithUserId = { ...body, userId: request.user.sub};
 
 		try {
-			const newOrder = await service.create(body);
+			const newOrder = await service.create(bodyWithUserId);
 			response.status(201).json({ message: "Created", body: newOrder });
 
 		} catch (error) {
@@ -64,9 +66,10 @@ router.post("/add-item",
 	validatorHandler(addItemSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
+		const orderProductWithId = { orderProductId: faker.string.uuid(), ...body };
 
 		try {
-			const newItem = await service.addItem(body);
+			const newItem = await service.addItem(orderProductWithId);
 			response.status(201).json({ message: "Added", body: newItem });
 
 		} catch (error) {
@@ -76,7 +79,6 @@ router.post("/add-item",
 
 router.put("/:orderId",
 	passport.authenticate("jwt", { session: false }),
-	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	validatorHandler(updateOrderSchema, "body"),
 	async (request, response, next) => {
@@ -94,7 +96,6 @@ router.put("/:orderId",
 
 router.patch("/:orderId",
 	passport.authenticate("jwt", { session: false }),
-	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	validatorHandler(updateOrderSchema, "body"),
 	async (request, response, next) => {

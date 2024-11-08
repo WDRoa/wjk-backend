@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const passport = require("./utils/auth");
 const routerApi = require("./routes");
 const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require("./middlewares/error.handler");
-const { checkApiKey } = require("./middlewares/auth.handler");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,13 +22,8 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions));
-
-require("./utils/auth");
-
-app.get("/", checkApiKey, (request, response) => response.send("WJK-Backend-Home"));
-
+app.use(passport.initialize());
 routerApi(app);
-
 app.use(logErrors);
 app.use(ormErrorHandler);
 app.use(boomErrorHandler);

@@ -9,7 +9,9 @@ const config = {
   dbName: process.env.DB_NAME,
   dbPort: process.env.DB_PORT,
 	apiKey: process.env.API_KEY,
-	jwtSecret: process.env.JWT_SECRET
+	jwtSecret: process.env.JWT_SECRET,
+	smtpEmail: process.env.SMTP_EMAIL,
+	smtpPassword: process.env.SMTP_PASSWORD
 }
 
 module.exports = { config };

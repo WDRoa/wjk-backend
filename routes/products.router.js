@@ -53,7 +53,7 @@ router.post("/",
 			response.status(201).json({ message: "Created", body: newProduct });
 
 		} catch (error) {
-			next(boom.internal("Occurred while creating a product", error));
+				next(boom.internal("Occurred while creating a product", error));
 			}
 });
 

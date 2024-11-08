@@ -1,10 +1,12 @@
-const { models } = require("./../libs/sequelize");
 const bcrypt = require("bcrypt");
+const { faker } = require("@faker-js/faker");
+const { models } = require("./../libs/sequelize");
 
 class UsersService {
 
 	async find() {
 		const users = await models.User.findAll();
+		users.forEach( user => delete user.dataValues.password);
 		return users;
   }
 
@@ -21,8 +23,10 @@ class UsersService {
 	async create(data) {
 		const hash = await bcrypt.hash(data.password, 10);
 		const newUser = await models.User.create({
+			userId: faker.string.uuid(),
 			...data,
 			password: hash,});
+
 		delete newUser.dataValues.password;
 		return newUser;
 	}
@@ -30,6 +34,7 @@ class UsersService {
   async update(id, changes) {
 		const userToUpdate = await this.findOne(id);
 		const updatedUser = await userToUpdate.update(changes);
+		delete updatedUser.dataValues.password;
 		return updatedUser;
 	}
 

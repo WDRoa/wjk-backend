@@ -7,7 +7,7 @@ const checkApiKey = (request, response, next) => {
     if (apiKey === config.apiKey) {
         next();
     } else {
-				(boom.unauthorized());
+				next(boom.unauthorized());
 			}
 }
 
