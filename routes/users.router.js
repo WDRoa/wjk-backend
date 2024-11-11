@@ -4,15 +4,15 @@ const passport = require("passport");
 
 const UsersService = require("./../services/user.service");
 const validatorHandler = require("./../middlewares/validator.handler");
-const { checkRoles } = require("./../middlewares/auth.handler");
+const { checkRoles, verifyToken } = require("./../middlewares/auth.handler");
 const { createUserSchema, updateUserSchema, getUserSchema } = require("./../schemas/user.schema");
-
 
 const router = express.Router();
 const service = new UsersService();
 
 router.get("/",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	async (request, response, next) => {
 	try {
@@ -26,6 +26,7 @@ router.get("/",
 
 router.get("/:userId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	async (request, response, next) => {
@@ -47,6 +48,7 @@ router.get("/:userId",
 
 router.post("/",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(createUserSchema, "body"),
 	async (request, response, next) => {
@@ -63,6 +65,7 @@ router.post("/",
 
 router.put("/:userId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	validatorHandler(updateUserSchema, "body"),
@@ -81,6 +84,7 @@ router.put("/:userId",
 
 router.patch("/:userId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	validatorHandler(updateUserSchema, "body"),
@@ -99,6 +103,7 @@ router.patch("/:userId",
 
 router.delete("/:userId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(getUserSchema, "params"),
 	async (request, response, next) => {

@@ -27,11 +27,28 @@ class AuthService {
   }
 
   signToken(user) {
-    const payload = { sub: user.id, role: user.role }
-    const token = jwt.sign(payload, config.jwtSecret, { expiresIn: "60min" });
+		const payload = { sub: user.userId, role: user.role };
+		const accessToken = jwt.sign(payload, config.jwtSecret, { expiresIn: "60min" });
+		const refreshToken = jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: "15d" });
 
-    return { user, token };
-  }
+		return { user, accessToken, refreshToken };
+	}
+
+	async refreshAccessToken(refreshToken) {
+		try {
+			const payload = jwt.verify(refreshToken, config.jwtRefreshSecret);
+			const newAccessToken = jwt.sign(
+				{ sub: payload.sub, role: payload.role },
+				config.jwtSecret,
+				{ expiresIn: "60min" }
+			);
+
+			return { accessToken: newAccessToken };
+
+		} catch (error) {
+				throw boom.unauthorized();
+			}
+	}
 
 	async sendRecovery(email) {
 		const user = await service.findByEmail(email);

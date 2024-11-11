@@ -10,7 +10,6 @@ const getCategorySchema = Joi.object({
 });
 
 const createCategorySchema = Joi.object({
-	categoryId: categoryId.required(),
   name: name.required(),
 	image: image.required(),
 	isBlock: isBlock.required()

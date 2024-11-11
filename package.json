@@ -12,7 +12,8 @@
     "migrations:run": "sequelize-cli db:migrate",
     "migrations:debug": "sequelize-cli db:migrate --debug",
     "migrations:revert": "sequelize-cli db:migrate:undo",
-    "migrations:delete": "sequelize-cli db:migrate:undo:all"
+    "migrations:delete": "sequelize-cli db:migrate:undo:all",
+		"seed": "sequelize-cli db:seed:all"
   },
   "keywords": [
     "Node.js",

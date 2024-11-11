@@ -5,7 +5,7 @@ const { faker } = require("@faker-js/faker");
 
 const OrdersService = require("./../services/order.service");
 const validatorHandler = require("./../middlewares/validator.handler");
-const { checkRoles } = require("./../middlewares/auth.handler");
+const { checkRoles, verifyToken } = require("./../middlewares/auth.handler");
 const { createOrderSchema, updateOrderSchema, getOrderSchema, addItemSchema } = require("./../schemas/order.schema");
 
 const router = express.Router();
@@ -13,6 +13,7 @@ const service = new OrdersService();
 
 router.get("/",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	async (request, response, next) => {
 	try {
@@ -26,6 +27,7 @@ router.get("/",
 
 router.get("/:orderId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	async (request, response, next) => {
@@ -47,6 +49,7 @@ router.get("/:orderId",
 
 router.post("/",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	validatorHandler(createOrderSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
@@ -63,6 +66,7 @@ router.post("/",
 
 router.post("/add-item",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	validatorHandler(addItemSchema, "body"),
 	async (request, response, next) => {
 		const body = request.body;
@@ -79,6 +83,8 @@ router.post("/add-item",
 
 router.put("/:orderId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
+	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	validatorHandler(updateOrderSchema, "body"),
 	async (request, response, next) => {
@@ -96,6 +102,8 @@ router.put("/:orderId",
 
 router.patch("/:orderId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
+	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	validatorHandler(updateOrderSchema, "body"),
 	async (request, response, next) => {
@@ -113,6 +121,7 @@ router.patch("/:orderId",
 
 router.delete("/:orderId",
 	passport.authenticate("jwt", { session: false }),
+	verifyToken,
 	checkRoles("admin"),
 	validatorHandler(getOrderSchema, "params"),
 	async (request, response, next) => {
