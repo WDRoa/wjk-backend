@@ -1,6 +1,13 @@
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/bd71664c-b71c-4feb-97f6-43bcdd2d71b9" alt="WJK-logo">
+    <img src="https://github.com/user-attachments/assets/bd71664c-b71c-4feb-97f6-43bcdd2d71b9" alt="Logo">
     <br/>(BACKEND)
+</p>
+
+<p align="center">
+    < --Preview-- > <br/>
+    <a href="https://wjk-backend.up.railway.app/api/v1/" target="_blank">
+        <img src="./assets/preview.png" alt="Preview">
+    </a> 
 </p>
 
 Hello! 🙂 I am **Willie David Roa (WDRoa)** 😎, and I welcome you to the **WJK backend codebase**. 😊 A project initially created to be modeled in my professional portfolio along with its frontend (WJK), 😉 in order to help me get my first job as a software developer. 🙈
