@@ -1,6 +1,8 @@
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/bd71664c-b71c-4feb-97f6-43bcdd2d71b9" alt="Logo">
-    <br/>(BACKEND)
+    <a href="https://wjk-backend.up.railway.app/api/v1/" target="_blank">
+        <img src="https://github.com/user-attachments/assets/bd71664c-b71c-4feb-97f6-43bcdd2d71b9" alt="Logo">
+    		<br/>(BACKEND)
+    </a> 
 </p>
 
 <p align="center">
